@@ -6,10 +6,12 @@ import AddTask from './components/AddTask'
 import Footer from './components/Footer'
 import About from './components/About'
 import { useState, useEffect } from 'react'
+import { useAccordionButton } from 'react-bootstrap'
 
 function App() {
   const[showAddTask, setShowAddTask] = useState(false)
   const [tasks, setTasks] = useState([])
+  const [userId, setUserId] = useState([])
 
   // useEffect(() => {
   
@@ -27,12 +29,13 @@ function App() {
     })
     const data = await res.json()
     const tasks = data.Items[0];
-    console.log(tasks)
-    console.log(tasks.task)
-    console.log(tasks.id)
+    // console.log(tasks)
+    // console.log(tasks.task)
+    // console.log(tasks.id)
     const task = tasks.task
-    console.log(task)
-    setTasks(task)
+    // console.log(task)
+    setTasks(task);
+    setUserId(tasks.id)
     return tasks
   }
 
@@ -41,7 +44,7 @@ function App() {
     const res = await fetch(`https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items/${id}`)
     const data = await res.json()
   }
-
+  
   //Add Task
   const addTask = async (task) => {
     const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items', {
@@ -54,24 +57,62 @@ function App() {
       },
       body: JSON.stringify(task),
     })
-    const data = await res.json()
+    console.log(task);
+    const data = await res.json();
+    console.log(data);
 
     // const id = Math.floor(Math.random() * 1000) + 1
     // const newTask = {id, ...task}
-    setTasks([...tasks, data])
+    setTasks([data]);
+    fetchTasks(userId);
   }
 
-  
-
-  //Delete Task
-  const deleteTask = async (id) => {
-    const res = await fetch(`https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items/${id}`, {
-      method: 'DELETE',
+  //Edit Task 
+  const editTask = async (task) => {
+    console.log(task);
+    let res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/edittask', {
+      method: 'PUT',
+      headers: {
+        'content-type': 'application/json',
+        'accept': '*/*'
+      },
+      body: JSON.stringify({
+        id: userId,
+        taskId: task.newTaskId,
+        newTask: task.newTask,
+        newDay: task.newDay,
+        newTime: task.newTime,
+      })
+    })
+    const data = await res.json();
+    console.log(data);
+    setTasks([data])
+    fetchTasks(userId);
+  }
+ 
+   //Delete Task
+  const deleteTask = async (taskId) => {
+    console.log(taskId)
+    const res = await fetch(`https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/task`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        "accept": "*/*"
+        // "Access-Control-Allow-Origin": "*",
+        // "Access-Control-Allow-Headers": "*"
+      },
+      body: JSON.stringify({
+        id: userId,
+        taskId
+      })
     }) 
-    // setTasks(tasks.filter((task) => task.id !== id))
-    res.status === 200
-      ? setTasks(tasks.filter((task) => task.id !== id))
-      : alert('Error Deleting This Task')
+    const data = await res.json()
+    const newTask = data.Attributes.task
+
+    console.log(newTask)
+    setTasks([newTask])
+    console.log(tasks)
+    fetchTasks(userId);
   }
 
   //Toggle Reminder 
@@ -107,12 +148,11 @@ function App() {
     console.log(tasks)
     // console.log(tasks.length)
     // console.log(tasks)
-  },[])
+  },[setTasks])
+
+  // console.log(editTask)
 
   return (
-    // <div>
-    //   Hello
-    // </div>
     <Router>
     <div className='container'>
       <Header
@@ -123,7 +163,7 @@ function App() {
         <>
         {showAddTask && <AddTask onAdd={addTask}/>}
         {tasks ? (
-          <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder}/>
+          <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} onEdit={editTask}/>
         ) : ('No Tasks to Show')
         }
       </>
@@ -135,36 +175,6 @@ function App() {
     </div>
     </Router>
 
-
-    // <Router>
-    //   <div className='container'>
-    //     <Header
-    //       onAdd={() => setShowAddTask(!showAddTask)}
-    //       showAdd={showAddTask}
-    //     />
-    //     <Routes>
-    //       <Route
-    //         path='/'
-    //         element={
-    //           <>
-    //             {showAddTask && <AddTask onAdd={addTask} />}
-    //             {tasks.length > 0 ? (
-    //               <Tasks
-    //                 tasks={tasks}
-    //                 onDelete={deleteTask}
-    //                 onToggle={toggleReminder}
-    //               />
-    //             ) : (
-    //               'No Tasks To Show'
-    //             )}
-    //           </>
-    //         }
-    //       />
-    //       <Route path='/about' element={<About />} />
-    //     </Routes>
-    //     <Footer />
-    //   </div>
-    // </Router>
   )
 }
 
