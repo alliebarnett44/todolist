@@ -10,50 +10,52 @@ import { useState, useEffect } from 'react'
 function App() {
   const[showAddTask, setShowAddTask] = useState(false)
   const [tasks, setTasks] = useState([])
- 
-  useEffect(() => {
-    const getTasks = async () => {
-      const tasksFromServer = await fetchTasks()
-      setTasks(tasksFromServer)
-    }
-    
-    getTasks()
-  }, [])
+
+  // useEffect(() => {
+  
+  //   fetchTasks()
+  // }, [])
 
   //Fetch Tasks from Server/Backend
-  const fetchTasks = async() => {
+  const fetchTasks = async () => {
     const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items', {
+      method: 'GET',
       headers: {
         'accept': 'application/json',
-        'Accept': '*/*'
+        'accept': '*/*'
       },
     })
     const data = await res.json()
-
-    return data
+    const tasks = data.Items[0];
+    console.log(tasks)
+    console.log(tasks.task)
+    console.log(tasks.id)
+    const task = tasks.task
+    console.log(task)
+    setTasks(task)
+    return tasks
   }
 
   //Fetch one Task
   const fetchTask = async(id) => {
     const res = await fetch(`https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items/${id}`)
     const data = await res.json()
-
-    return data
   }
 
   //Add Task
   const addTask = async (task) => {
     const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items', {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        "Accept": "*/*"
+        "accept": "*/*"
         // "Access-Control-Allow-Origin": "*",
         // "Access-Control-Allow-Headers": "*"
       },
       body: JSON.stringify(task),
     })
     const data = await res.json()
+
     // const id = Math.floor(Math.random() * 1000) + 1
     // const newTask = {id, ...task}
     setTasks([...tasks, data])
@@ -94,7 +96,23 @@ function App() {
     )
   }
 
+  useEffect(() => {
+    // const getTasks = async () => {
+    //   const tasksFromServer = await fetchTasks()
+    //   console.log(tasksFromServer)
+    //   setTasks(tasksFromServer)
+    // }
+    console.log(tasks)
+    fetchTasks()
+    console.log(tasks)
+    // console.log(tasks.length)
+    // console.log(tasks)
+  },[])
+
   return (
+    // <div>
+    //   Hello
+    // </div>
     <Router>
     <div className='container'>
       <Header
@@ -104,7 +122,7 @@ function App() {
       <Route path='/' element={
         <>
         {showAddTask && <AddTask onAdd={addTask}/>}
-        {tasks.length > 0 ? (
+        {tasks ? (
           <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder}/>
         ) : ('No Tasks to Show')
         }

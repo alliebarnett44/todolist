@@ -1,11 +1,16 @@
 import React from 'react'
 import { useState } from 'react'
+import { v4 as uuidv4} from 'uuid'
 
 const AddTask = ({ onAdd }) => {
   const[task, setTask] = useState('')
   const[day, setDay] = useState('')
   const[time, setTime] = useState('')
   const[reminder, setReminder] = useState(false)
+  const[taskId, setTaskId] = useState('')
+  const [id, setId] = useState('33')
+
+  const value = '33'
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -13,12 +18,15 @@ const AddTask = ({ onAdd }) => {
       alert('Please Add A Task')
       return
     } else {
-      onAdd({task, day, time, reminder});
+      onAdd({task, day, time, taskId, id});
       setTask('');
       setDay('');
-      setTime('')
-      setReminder(false)
+      setTime('');
+      setTaskId(uuidv4());
+      setId(id)
     }
+    console.log(taskId)
+    console.log(id)
   }
 
   return (
