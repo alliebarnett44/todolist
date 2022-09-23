@@ -7,26 +7,23 @@ const AddTask = ({ onAdd }) => {
   const[day, setDay] = useState('')
   const[time, setTime] = useState('')
   const[reminder, setReminder] = useState(false)
-  const[taskId, setTaskId] = useState('')
-  const [id, setId] = useState('33')
 
-  const value = '33'
+  const getRndInteger = (min, max) => {
+    return Math.floor(Math.random() * (max - min) ) + min;
+  }
+
 
   const onSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if(!task) {
       alert('Please Add A Task')
       return
     } else {
-      onAdd({task, day, time, taskId, id});
+      onAdd({task, day, time});
       setTask('');
       setDay('');
       setTime('');
-      setTaskId(uuidv4());
-      setId(id)
     }
-    console.log(taskId)
-    console.log(id)
   }
 
   return (
