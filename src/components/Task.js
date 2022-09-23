@@ -1,5 +1,6 @@
 import { FaTimes } from 'react-icons/fa'
 import EditTask from './EditTask'
+import DeleteTask from './DeleteTask'
 import {useState} from 'react'
 
 const Task = ({task, onDelete, onToggle, onEdit}) => {
@@ -15,7 +16,7 @@ const Task = ({task, onDelete, onToggle, onEdit}) => {
     <div className={`task ${task.reminder ? 'reminder' : ""}`} onDoubleClick={() => onToggle(task.id)}>
       <h2>
         {task.task} 
-        <FaTimes style={{color: 'green', cursor: 'pointer'}} onClick={ () => onDelete(task.taskId)}/>
+        <DeleteTask onDelete = {onDelete} task={task}/>
       </h2>
       <p>
         {task.day}

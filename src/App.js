@@ -6,17 +6,17 @@ import AddTask from './components/AddTask'
 import Footer from './components/Footer'
 import About from './components/About'
 import { useState, useEffect } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import { useAccordionButton } from 'react-bootstrap'
 
 function App() {
   const[showAddTask, setShowAddTask] = useState(false)
   const [tasks, setTasks] = useState([])
   const [userId, setUserId] = useState([])
+  const [show, setShow] = useState(false);
 
-  // useEffect(() => {
-  
-  //   fetchTasks()
-  // }, [])
+  const handleClose = () => setShow(false);
+
 
   //Fetch Tasks from Server/Backend
   const fetchTasks = async () => {
@@ -47,6 +47,7 @@ function App() {
   
   //Add Task
   const addTask = async (task) => {
+    console.log(task)
     const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items', {
       method: 'PUT',
       headers: {
@@ -55,9 +56,14 @@ function App() {
         // "Access-Control-Allow-Origin": "*",
         // "Access-Control-Allow-Headers": "*"
       },
-      body: JSON.stringify(task),
+      body: JSON.stringify({
+        id: userId,
+        taskId: uuidv4(),
+        task: task.task,
+        time: task.time,
+        day: task.day
+      }),
     })
-    console.log(task);
     const data = await res.json();
     console.log(data);
 
@@ -92,7 +98,6 @@ function App() {
  
    //Delete Task
   const deleteTask = async (taskId) => {
-    console.log(taskId)
     const res = await fetch(`https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/task`, {
       method: 'PUT',
       headers: {
@@ -113,6 +118,7 @@ function App() {
     setTasks([newTask])
     console.log(tasks)
     fetchTasks(userId);
+    handleClose();
   }
 
   //Toggle Reminder 

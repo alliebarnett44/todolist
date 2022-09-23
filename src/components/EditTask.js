@@ -15,9 +15,7 @@ const EditTask = (task, onEdit, taskId) => {
   const [newTime, setNewTime] = useState(task.task.time)
 
   const newOnEdit = task.onEdit
-  // console.log(newOnEdit)
   const newTaskId = task.taskId
-  // console.log(newTaskId);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
