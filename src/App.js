@@ -1,19 +1,23 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom'
 import Header from './components/Header'
 import Tasks from './components/Tasks'
 import AddTask from './components/AddTask'
 import Footer from './components/Footer'
 import About from './components/About'
+import Homepage from './components/Homepage'
 import { useState, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useAccordionButton } from 'react-bootstrap'
+import Login from './components/Login'
 
 function App() {
   const[showAddTask, setShowAddTask] = useState(false)
+  const[showLogin, setShowLogin] = useState(false)
   const [tasks, setTasks] = useState([])
   const [userId, setUserId] = useState([])
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
 
   const handleClose = () => setShow(false);
 
@@ -37,6 +41,39 @@ function App() {
     setTasks(task);
     setUserId(tasks.id)
     return tasks
+  }
+
+  const validateUser = async(info) => {
+    console.log(info.email)
+    console.log(info.password)
+
+    const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/validate', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'accept': '*/*'
+      },
+      body: JSON.stringify({
+        email: info.email,
+        password: info.password
+      })
+    })
+    const data = await res.json();
+    console.log(data.Items)
+    const userInfo = data.Items
+
+  
+    if(userInfo.length !== 0) {
+      console.log('navigating to profile');
+      navigate("/profile")
+      // navigate("/profile", { state: { id: userId} } );
+    } else if(userInfo.length == 0) {
+      console.log('new user')
+    }
+    else {
+      alert('Incorrect email/password')
+    }
+
   }
 
   //Fetch one Task
@@ -143,30 +180,36 @@ function App() {
     )
   }
 
+  //Log Out
+  const logOut = () => {
+    navigate("/")
+  }
+
   useEffect(() => {
-    // const getTasks = async () => {
-    //   const tasksFromServer = await fetchTasks()
-    //   console.log(tasksFromServer)
-    //   setTasks(tasksFromServer)
-    // }
-    console.log(tasks)
     fetchTasks()
-    console.log(tasks)
-    // console.log(tasks.length)
-    // console.log(tasks)
   },[setTasks])
 
   // console.log(editTask)
 
   return (
-    <Router>
     <div className='container'>
-      <Header
-        onAdd ={()=>setShowAddTask(!showAddTask)} 
-        showAdd ={showAddTask}/>
+      
       <Routes>
       <Route path='/' element={
         <>
+        <Homepage 
+          onShow={()=> setShowLogin(!showLogin)} 
+          showLoginButton={showLogin}/>
+        {showLogin && <Login validateUser={validateUser}/>}
+        </>
+        }
+      />
+      <Route path='/profile' element={
+        <>
+        <Header
+          onAdd ={()=>setShowAddTask(!showAddTask)} 
+          showAdd ={showAddTask}
+          onLogOut = {logOut} />
         {showAddTask && <AddTask onAdd={addTask}/>}
         {tasks ? (
           <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} onEdit={editTask}/>
@@ -179,8 +222,6 @@ function App() {
       </Routes>  
     <Footer/>
     </div>
-    </Router>
-
   )
 }
 
