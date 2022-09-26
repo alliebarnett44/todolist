@@ -1,14 +1,25 @@
 import React from 'react'
 import Button from './Button'
-import { useState } from 'react'
-
-
+import { useState, useRef } from 'react'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye,faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const Login = ({ validateUser }) => {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const[show, setShow]= useState(false)
+  const pass = useRef();
 
+  const Eye = <FontAwesomeIcon className="icon" icon={faEye} />;
+  const EyeSlash = <FontAwesomeIcon className="icon" icon ={faEyeSlash}/>;
+
+
+  const showpassword = () =>{
+    setShow(!show)
+    pass.current.type = show ? 'password':'text';
+    }
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     validateUser({email, password})
@@ -33,18 +44,22 @@ const Login = ({ validateUser }) => {
         <div>
           <label>Password</label>
           <input
-          type='text'
-          placeholder='Enter password'
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          >
-          </input>
+            type='password'
+            ref={pass}
+            placeholder='Enter password'
+            value={password}
+            onChange={e => setPassword(e.target.value)}/>
+            {show ? <i onClick={showpassword}>{Eye}</i>:<i onClick={showpassword}>{EyeSlash}</i>}
         </div>
-        <button 
+        <Button 
+        color='black' 
+        text='Log In'
+        onClick={handleSubmit} />
+        {/* <button 
           className='btn' 
           type='submit'
           style={{fontSize: '12px', background: 'black', cursor: 'pointer', padding: '3px 5px', margin: '0px'}} 
-          >Log In</button>
+          >Log In</button> */}
       </form>
     </div>
   )

@@ -5,17 +5,14 @@ import { useState } from 'react'
 
 Modal.setAppElement('#root');
 
-const EditTask = (task, onEdit, taskId) => {
+const EditTask = ({ task, onEdit, taskId }) => {
   // console.log(task.onEdit);
   // console.log(task.task);
   // console.log(task.taskId);
   const [show, setShow] = useState(false);
-  const [newTask, setNewTask] = useState(task.task.task);
-  const [newDay, setNewDay] = useState(task.task.day);
-  const [newTime, setNewTime] = useState(task.task.time)
-
-  const newOnEdit = task.onEdit
-  const newTaskId = task.taskId
+  const [newTask, setNewTask] = useState(task.task);
+  const [newDay, setNewDay] = useState(task.day);
+  const [newTime, setNewTime] = useState(task.time);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -28,7 +25,7 @@ const EditTask = (task, onEdit, taskId) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    newOnEdit({newTask, newDay, newTime, newTaskId}); 
+    onEdit({newTask, newDay, newTime, taskId}); 
     setNewTask('');
     setNewDay('');
     setNewTime('');
@@ -45,9 +42,9 @@ const EditTask = (task, onEdit, taskId) => {
               Edit your Task
             </h3>
             <p>
-              <input className='form-control' type='text' name='task'  placeholder={task.task.task} value={newTask} onChange={(e) => setNewTask(e.target.value)}></input>
-              <input className='form-control' type='text' name='day' placeholder={task.task.day} value={newDay} onChange={(e) => setNewDay(e.target.value)}></input>
-              <input className='form-contol' type='text' name='time' placeholder={task.task.time} value={newTime} onChange={(e) => setNewTime(e.target.value)}></input>
+              <input className='form-control' type='text' name='task'  placeholder={task.task} value={newTask} onChange={(e) => setNewTask(e.target.value)}></input>
+              <input className='form-control' type='text' name='day' placeholder={task.day} value={newDay} onChange={(e) => setNewDay(e.target.value)}></input>
+              <input className='form-contol' type='text' name='time' placeholder={task.time} value={newTime} onChange={(e) => setNewTime(e.target.value)}></input>
               <button className='btn btn-block' type='submit'>Add</button>
               <button className='btn btn-block' onClick={handleClose} type='button'>Close</button>
             </p>

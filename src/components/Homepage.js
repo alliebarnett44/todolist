@@ -6,7 +6,7 @@ import Header from './Header'
 import { useState } from 'react'
 
 
-const Homepage = ({ onShow, showLoginButton }) => {
+const Homepage = ({ onShow, showLoginButton, onShowCreate, showCreateButton }) => {
 
   return (
     <div className='header'>
@@ -19,9 +19,9 @@ const Homepage = ({ onShow, showLoginButton }) => {
         onClick={onShow}
       />
       <Button
-        color='black' 
+        color={showCreateButton ? 'gray': 'black'}
         text='Create Account' 
-        // onClick={onShow}
+        onClick={onShowCreate}
       />
     </div>
   )

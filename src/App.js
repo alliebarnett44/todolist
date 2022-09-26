@@ -6,6 +6,7 @@ import AddTask from './components/AddTask'
 import Footer from './components/Footer'
 import About from './components/About'
 import Homepage from './components/Homepage'
+import SignUp from './components/SignUp'
 import { useState, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useAccordionButton } from 'react-bootstrap'
@@ -14,6 +15,7 @@ import Login from './components/Login'
 function App() {
   const[showAddTask, setShowAddTask] = useState(false)
   const[showLogin, setShowLogin] = useState(false)
+  const[showCreate, setShowCreate] = useState(false)
   const [tasks, setTasks] = useState([])
   const [userId, setUserId] = useState([])
   const [show, setShow] = useState(false);
@@ -21,10 +23,12 @@ function App() {
 
   const handleClose = () => setShow(false);
 
+  console.log(userId)
 
   //Fetch Tasks from Server/Backend
-  const fetchTasks = async () => {
-    const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items', {
+  const fetchTasks = async (userId) => {
+    console.log(userId)
+    const res = await fetch(`https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items/${userId}`, {
       method: 'GET',
       headers: {
         'accept': 'application/json',
@@ -32,14 +36,15 @@ function App() {
       },
     })
     const data = await res.json()
-    const tasks = data.Items[0];
-    // console.log(tasks)
-    // console.log(tasks.task)
-    // console.log(tasks.id)
-    const task = tasks.task
-    // console.log(task)
-    setTasks(task);
-    setUserId(tasks.id)
+    console.log(data)
+    const tasks = data.Item.task;
+    const id = data.Item.id
+    console.log(tasks)
+   
+    
+    // // console.log(task)
+    setTasks(tasks);
+    setUserId(id);
     return tasks
   }
 
@@ -61,8 +66,7 @@ function App() {
     const data = await res.json();
     console.log(data.Items)
     const userInfo = data.Items
-
-  
+    
     if(userInfo.length !== 0) {
       console.log('navigating to profile');
       navigate("/profile")
@@ -73,6 +77,10 @@ function App() {
     else {
       alert('Incorrect email/password')
     }
+    const validatedUserId = userInfo[0].id
+    console.log(validatedUserId)
+    setUserId(validatedUserId)
+    fetchTasks(validatedUserId);
 
   }
 
@@ -82,6 +90,31 @@ function App() {
     const data = await res.json()
   }
   
+  //Create User
+  const createUser = async(info) => {
+    const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/user', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        "accept": "*/*"
+        // "Access-Control-Allow-Origin": "*",
+        // "Access-Control-Allow-Headers": "*"
+      },
+      body: JSON.stringify({
+        id: uuidv4(),
+        firstName: info.firstName,
+        lastName: info.lastName,
+        email: info.email,
+        password: info.password,
+        task: []
+      }),
+    })
+    const data = await res.json();
+    console.log(data);
+    navigate("/profile")
+    fetchTasks(userId)
+  }
+
   //Add Task
   const addTask = async (task) => {
     console.log(task)
@@ -121,7 +154,7 @@ function App() {
       },
       body: JSON.stringify({
         id: userId,
-        taskId: task.newTaskId,
+        taskId: task.taskId,
         newTask: task.newTask,
         newDay: task.newDay,
         newTime: task.newTime,
@@ -185,9 +218,10 @@ function App() {
     navigate("/")
   }
 
-  useEffect(() => {
-    fetchTasks()
-  },[setTasks])
+
+  // useEffect(() => {
+  //   fetchTasks();
+  // },[setTasks])
 
   // console.log(editTask)
 
@@ -199,8 +233,11 @@ function App() {
         <>
         <Homepage 
           onShow={()=> setShowLogin(!showLogin)} 
-          showLoginButton={showLogin}/>
+          onShowCreate={() => setShowCreate(!showCreate)}
+          showLoginButton={showLogin}
+          showCreateButton={showCreate}/>
         {showLogin && <Login validateUser={validateUser}/>}
+        {showCreate && <SignUp createUser={createUser}/>}
         </>
         }
       />
