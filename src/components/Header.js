@@ -2,7 +2,7 @@ import Button from './Button'
 import PropTypes from 'prop-types'
 
 
-const Header = ({title, onAdd, showAdd}) => {
+const Header = ({title, onAdd, showAdd, onLogOut }) => {
   const onClick = (e) => {
     console.log(e);
   }
@@ -15,6 +15,10 @@ const Header = ({title, onAdd, showAdd}) => {
         color={showAdd ? 'red' : 'green'} 
         text={showAdd ? 'Close' : 'Add'} 
         onClick={onAdd} />
+      <Button 
+        color='gray' 
+        text='Log Out'
+        onClick={onLogOut} />
     </header>
     </div>
   )
