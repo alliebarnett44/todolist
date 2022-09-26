@@ -2,6 +2,16 @@ import Task from './Task'
 
 
 const Tasks = ({ tasks, onDelete, onToggle, onEdit }) => {
+  console.log(tasks)
+
+  if (tasks == undefined) {
+    return(
+      <div>
+        New Profile
+      </div>
+    )
+  } else {
+
   return (
     <div>
       {tasks.map((task) => (
@@ -9,5 +19,6 @@ const Tasks = ({ tasks, onDelete, onToggle, onEdit }) => {
         ))}
     </div>
   )
+  }
 }
 export default Tasks
