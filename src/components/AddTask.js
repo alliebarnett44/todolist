@@ -8,10 +8,6 @@ const AddTask = ({ onAdd }) => {
   const[time, setTime] = useState('')
   const[reminder, setReminder] = useState(false)
 
-  const getRndInteger = (min, max) => {
-    return Math.floor(Math.random() * (max - min) ) + min;
-  }
-
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -19,7 +15,7 @@ const AddTask = ({ onAdd }) => {
       alert('Please Add A Task')
       return
     } else {
-      onAdd({task, day, time});
+      onAdd({task, day, time, reminder});
       setTask('');
       setDay('');
       setTime('');
@@ -41,7 +37,7 @@ const AddTask = ({ onAdd }) => {
         <input tyle='text' placeholder='Add Time' value={time} onChange={(e) => setTime(e.target.value)}/>
       </div>
       <div className='form-control form-control-check'>
-        <label>Priority</label>
+        <label>Important</label>
         <input 
           type='checkbox' 
           value={reminder} 

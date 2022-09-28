@@ -13,21 +13,22 @@ import { useAccordionButton } from 'react-bootstrap'
 import Login from './components/Login'
 
 function App() {
-  const[showAddTask, setShowAddTask] = useState(false)
-  const[showLogin, setShowLogin] = useState(false)
-  const[showCreate, setShowCreate] = useState(false)
-  const [tasks, setTasks] = useState([])
-  const [userId, setUserId] = useState([])
+  const[showAddTask, setShowAddTask] = useState(false);
+  const[showLogin, setShowLogin] = useState(false);
+  const[showCreate, setShowCreate] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const [userId, setUserId] = useState([]);
+  const [userFirstName, setUserFirstName] = useState ('');
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
 
   const handleClose = () => setShow(false);
 
-  console.log(userId)
+  // console.log(userId)
 
   //Fetch Tasks from Server/Backend
   const fetchTasks = async (userId) => {
-    console.log(userId)
+    // console.log(userId)
     const res = await fetch(`https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items/${userId}`, {
       method: 'GET',
       headers: {
@@ -38,13 +39,13 @@ function App() {
     const data = await res.json()
     console.log(data)
     const tasks = data.Item.task;
-    const id = data.Item.id
+    const firstName = data.Item.firstName
     console.log(tasks)
    
     
     // // console.log(task)
     setTasks(tasks);
-    setUserId(id);
+    setUserFirstName(firstName);
     return tasks
   }
 
@@ -85,8 +86,8 @@ function App() {
   }
 
   //Fetch one Task
-  const fetchTask = async(id) => {
-    const res = await fetch(`https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items/${id}`)
+  const fetchTask = async(taskId) => {
+    const res = await fetch(`https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/items/${userId}/${taskId}`)
     const data = await res.json()
   }
   
@@ -111,8 +112,16 @@ function App() {
     })
     const data = await res.json();
     console.log(data);
+    const newUserId = data.Item.id;
+    console.log(newUserId);
+    
+    
+    setUserId(newUserId);
+    fetchTasks(newUserId);
     navigate("/profile")
-    fetchTasks(userId)
+    console.log(userId);
+    // fetchTasks(userId);
+    // navigate("/profile");
   }
 
   //Add Task
@@ -131,7 +140,8 @@ function App() {
         taskId: uuidv4(),
         task: task.task,
         time: task.time,
-        day: task.day
+        day: task.day,
+        reminder: task.reminder
       }),
     })
     const data = await res.json();
@@ -191,27 +201,59 @@ function App() {
     handleClose();
   }
 
-  //Toggle Reminder 
-  const toggleReminder = async (id) => {
+  // Toggle Reminder 
+  const toggleReminder = async (task) => {
     // const taskToToggle = await fetchTask(id)
-    // const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder }
 
-    // const res = await fetch(`http://localhost:6060/tasks/${id}`, {
-    //   method: 'PUT',
-    //   headers: {
-    //     'Content-type': 'application/json',
-    //   },
-    //   body: JSON.stringify(updTask),
-    // })
+    const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/item', {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: userId,
+        taskId: task.taskId,
+        task: task.task,
+        day: task.day,
+        time: task.time,
+        reminder: task.reminder
+      }),
+    })
 
-    // const data = await res.json()
+    const data = await res.json()
+    console.log(data);
 
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, reminder: !task.reminder } : task
-      )
-    )
+    setTasks([data]);
+    fetchTasks(userId);
+
+    // setTasks(
+    //   tasks.map((task) =>
+    //     task.taskId === taskId ? { ...task, reminder: !task.reminder } : task
+    //   )
+    // )
   }
+
+  //  //Toggle Reminder 
+  //  const toggleReminder = async (id) => {
+  //   const taskToToggle = await fetchTask(id)
+  //   // const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder }
+
+  //   const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/item', {
+  //     method: 'PUT',
+  //     headers: {
+  //       'Content-type': 'application/json',
+  //     },
+  //     body: JSON.stringify(updTask),
+  //   })
+
+  //   const data = await res.json()
+
+  //   setTasks(
+  //     tasks.map((task) =>
+  //       task.id === id ? { ...task, reminder: !task.reminder } : task
+  //     )
+  //   )
+  // }
 
   //Log Out
   const logOut = () => {
@@ -221,7 +263,7 @@ function App() {
 
   // useEffect(() => {
   //   fetchTasks();
-  // },[setTasks])
+  // },[setTasks, setUserId])
 
   // console.log(editTask)
 
@@ -246,7 +288,8 @@ function App() {
         <Header
           onAdd ={()=>setShowAddTask(!showAddTask)} 
           showAdd ={showAddTask}
-          onLogOut = {logOut} />
+          onLogOut = {logOut} 
+          firstName = {userFirstName} />
         {showAddTask && <AddTask onAdd={addTask}/>}
         {tasks ? (
           <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} onEdit={editTask}/>
