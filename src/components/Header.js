@@ -2,15 +2,14 @@ import Button from './Button'
 import PropTypes from 'prop-types'
 
 
-const Header = ({title, onAdd, showAdd, onLogOut }) => {
-  const onClick = (e) => {
-    console.log(e);
-  }
+const Header = ({title, onAdd, showAdd, onLogOut, firstName }) => {
+  // console.log(firstName)
+
 
   return (
     <div>
     <header className='header'>
-      <h1>{title}</h1>
+      <h1>{`${firstName}'s To-Do List`}</h1>
       <Button 
         color={showAdd ? 'red' : 'green'} 
         text={showAdd ? 'Close' : 'Add'} 
@@ -24,9 +23,9 @@ const Header = ({title, onAdd, showAdd, onLogOut }) => {
   )
 }
 
-Header.defaultProps = {
-  title: 'Allies To-Do List'
-}
+// Header.defaultProps = {
+//   title: `${firstName}'s To-Do List`
+// }
 Header.propTypes = {
   title: PropTypes.string,
 }

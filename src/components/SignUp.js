@@ -26,9 +26,9 @@ const SignUp = ({ createUser }) => {
       setShowMessage('Passwords do not match!')
       return;
     } else if(password.length < 3 ) {
-      setShowErrorMessage('Password must be at least 3 characters long! ')
+      setShowErrorMessage('Password must be at least 8 characters long! ')
     }
-    else if(password === confirmPassword && password.length >= 13) {
+    else if(password === confirmPassword && password.length >= 8) {
       setShowMessage('')
       setShowErrorMessage('')
     } else {

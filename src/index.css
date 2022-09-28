@@ -14,7 +14,7 @@ body {
   max-width: 700px;
   margin: 30px auto;
   overflow: auto;
-  min-height: 300px;
+  min-height: 600px;
   border: 1px solid black;
   padding: 30px;
   border-radius: 5px;
@@ -39,6 +39,14 @@ body {
   text-decoration: none;
   font-size: 15px;
   font-family: inherit;
+}
+
+.logo {
+  height: 250px;
+  width: 250px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .btn:focus {
@@ -113,5 +121,9 @@ body {
 
 footer {
   margin-top: 30px;
+  text-align: center;
+}
+
+h3 {
   text-align: center;
 }

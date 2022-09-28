@@ -2,12 +2,12 @@ import Task from './Task'
 
 
 const Tasks = ({ tasks, onDelete, onToggle, onEdit }) => {
-  console.log(tasks)
+  // console.log(tasks)
 
-  if (tasks == undefined) {
+  if (tasks.length === 0) {
     return(
       <div>
-        New Profile
+        Welcome! Get started by adding a task!
       </div>
     )
   } else {
