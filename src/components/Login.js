@@ -15,6 +15,13 @@ const Login = ({ validateUser }) => {
   const EyeSlash = <FontAwesomeIcon className="icon" icon ={faEyeSlash}/>;
 
 
+  // const validateEmail = (email) =>
+  //   {
+  //       var re = /\S+@\S+\.\S+/;
+  //       return re.test(email);
+  //   }
+
+
   const showpassword = () =>{
     setShow(!show)
     pass.current.type = show ? 'password':'text';

@@ -16,6 +16,7 @@ function App() {
   const[showAddTask, setShowAddTask] = useState(false);
   const[showLogin, setShowLogin] = useState(false);
   const[showCreate, setShowCreate] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState('')
   const [tasks, setTasks] = useState([]);
   const [userId, setUserId] = useState([]);
   const [userFirstName, setUserFirstName] = useState ('');
@@ -49,39 +50,53 @@ function App() {
     return tasks
   }
 
+  const validateEmail = (email) =>
+  {
+      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+  }
+
   const validateUser = async(info) => {
     console.log(info.email)
     console.log(info.password)
 
-    const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/validate', {
-      method: 'POST',
-      headers: {
-        'accept': 'application/json',
-        'accept': '*/*'
-      },
-      body: JSON.stringify({
-        email: info.email,
-        password: info.password
+    if (validateEmail(info.email) == true) {
+      const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/validate', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'accept': '*/*'
+        },
+        body: JSON.stringify({
+          email: info.email,
+          password: info.password
+        })
       })
-    })
-    const data = await res.json();
-    console.log(data.Items)
-    const userInfo = data.Items
-    
-    if(userInfo.length !== 0) {
-      console.log('navigating to profile');
-      navigate("/profile")
-      // navigate("/profile", { state: { id: userId} } );
-    } else if(userInfo.length == 0) {
-      console.log('new user')
+      const data = await res.json();
+      const count = data.Count
+      console.log(count)
+      const userInfo = data.Items
+      console.log(userInfo)
+
+      if(count == 0) {
+        setShowErrorMessage('Incorrect Password')
+      } else if(count !==0 && userInfo.length !== 0) {
+        console.log('navigating to profile');
+        setShowErrorMessage('')
+        navigate("/profile")
+        // navigate("/profile", { state: { id: userId} } );
+      } else if(count !==0 && userInfo.length == 0) {
+        console.log('new user')
+        setShowErrorMessage('')
+      }
+
+      const validatedUserId = userInfo[0].id
+      console.log(validatedUserId)
+      setUserId(validatedUserId)
+      fetchTasks(validatedUserId);
+    } else if (validateEmail(info.email) == false) {
+      setShowErrorMessage('Invalid email!')
     }
-    else {
-      alert('Incorrect email/password')
-    }
-    const validatedUserId = userInfo[0].id
-    console.log(validatedUserId)
-    setUserId(validatedUserId)
-    fetchTasks(validatedUserId);
 
   }
 
@@ -258,7 +273,12 @@ function App() {
   //Log Out
   const logOut = () => {
     navigate("/")
+    setShowLogin(!showLogin)
+    setTasks([]);
+    setUserFirstName('');
+    setUserId('')
   }
+
 
 
   // useEffect(() => {
@@ -274,12 +294,15 @@ function App() {
       <Route path='/' element={
         <>
         <Homepage 
-          onShow={()=> setShowLogin(!showLogin)} 
-          onShowCreate={() => setShowCreate(!showCreate)}
+          onShow={()=> [setShowLogin(!showLogin), setShowErrorMessage('')]} 
+          onShowCreate={() => [setShowCreate(!showCreate), setShowErrorMessage('')]}
           showLoginButton={showLogin}
           showCreateButton={showCreate}/>
         {showLogin && <Login validateUser={validateUser}/>}
         {showCreate && <SignUp createUser={createUser}/>}
+        <div className='error-message'>
+          {showErrorMessage}
+        </div>
         </>
         }
       />
