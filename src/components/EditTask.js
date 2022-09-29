@@ -26,9 +26,10 @@ const EditTask = ({ task, onEdit, taskId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onEdit({newTask, newDay, newTime, taskId}); 
-    setNewTask('');
-    setNewDay('');
-    setNewTime('');
+    setNewTask(newTask);
+    setNewDay(newDay);
+    setNewTime(newTime);
+    handleClose();
     console.log('submitted');
   }
 
@@ -45,7 +46,7 @@ const EditTask = ({ task, onEdit, taskId }) => {
               <input className='form-control' type='text' name='task'  placeholder={task.task} value={newTask} onChange={(e) => setNewTask(e.target.value)}></input>
               <input className='form-control' type='text' name='day' placeholder={task.day} value={newDay} onChange={(e) => setNewDay(e.target.value)}></input>
               <input className='form-contol' type='text' name='time' placeholder={task.time} value={newTime} onChange={(e) => setNewTime(e.target.value)}></input>
-              <button className='btn btn-block' type='submit'>Add</button>
+              <button className='btn btn-block' type='submit'>Edit</button>
               <button className='btn btn-block' onClick={handleClose} type='button'>Close</button>
             </p>
         </form>

@@ -127,3 +127,8 @@ footer {
 h3 {
   text-align: center;
 }
+
+.error-message{
+  color: red;
+  font-weight: bold;
+}

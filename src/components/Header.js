@@ -12,12 +12,17 @@ const Header = ({title, onAdd, showAdd, onLogOut, firstName }) => {
       <h1>{`${firstName}'s To-Do List`}</h1>
       <Button 
         color={showAdd ? 'red' : 'green'} 
-        text={showAdd ? 'Close' : 'Add'} 
+        text={showAdd ? 'Close' : 'Add Task'} 
         onClick={onAdd} />
       <Button 
         color='gray' 
         text='Log Out'
         onClick={onLogOut} />
+      {/* <Button
+        color='black'
+        text='Edit Profile'
+        // onClick={}
+        /> */}
     </header>
     </div>
   )
