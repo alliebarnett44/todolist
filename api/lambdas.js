@@ -233,8 +233,51 @@ exports.handler = async (event, context) => {
             };
           body = await dynamo.update(reminderParams).promise();
           break;
+
+          //UPDATE DONE STATUS
+          case "PUT /done":
+            var doneData = JSON.parse(event.body);
+            var userIdForDone = doneData.id;
+            var doneTaskId = doneData.taskId;
+            var taskDone = doneData.done;
+            var doneTask = doneData.task;
+            var doneDay = doneData.day;
+            var doneTime = doneData.time;
+          
+          //get current list
+            var listParamsDone = {
+                TableName: 'http-crud-to-do-list',
+                Key: {
+                    'id': userIdForDone
+                }
+            };
+            var userRecords = await dynamo.get(listParamsDone).promise();
+            console.log(JSON.stringify(userRecords));
+            var userRecordList = userRecords.Item.task;
+            // console.log(JSON.stringify());
+            
+            const updateDone = userRecordList.map(p =>
+              p.taskId === doneTaskId
+                ? { ...p, done: !taskDone, task: doneTask, day: doneDay, time: doneTime }
+                : p
+            );
+            console.log(JSON.stringify(updateDone));
+            
+            var doneParams = {
+                TableName: "http-crud-to-do-list",
+                Key: {
+                  "id": userIdForDone
+                },
+                UpdateExpression: "SET task = :val",
+                ExpressionAttributeValues: {
+                  ":val": updateDone
+                },
+                ReturnValues: "UPDATED_NEW"
+              };
+            body = await dynamo.update(doneParams).promise();
+            break;
         
-        //Add a new task
+        //ADD A NEW TASK
         case "PUT /items":
           let request = JSON.parse(event.body);
           console.log(request);
@@ -245,7 +288,7 @@ exports.handler = async (event, context) => {
             },
             UpdateExpression: "SET task[100] = :vals",
             ExpressionAttributeValues: {
-              ":vals": {taskId: request.taskId, task: request.task, day: request.day, time: request.time, reminder: request.reminder}
+              ":vals": {taskId: request.taskId, task: request.task, day: request.day, time: request.time, reminder: request.reminder, done:request.done}
             },
             ReturnValues: "UPDATED_NEW"
           }).promise();

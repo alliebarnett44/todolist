@@ -7,6 +7,7 @@ import Footer from './components/Footer'
 import About from './components/About'
 import Homepage from './components/Homepage'
 import SignUp from './components/SignUp'
+import Done from './components/Done'
 import { useState, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useAccordionButton } from 'react-bootstrap'
@@ -248,27 +249,31 @@ function App() {
     // )
   }
 
-  //  //Toggle Reminder 
-  //  const toggleReminder = async (id) => {
-  //   const taskToToggle = await fetchTask(id)
-  //   // const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder }
+  const updateDone = async (task) => {
+    // const taskToToggle = await fetchTask(id)
 
-  //   const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/item', {
-  //     method: 'PUT',
-  //     headers: {
-  //       'Content-type': 'application/json',
-  //     },
-  //     body: JSON.stringify(updTask),
-  //   })
+    const res = await fetch('https://m8k9cw5snc.execute-api.us-east-1.amazonaws.com/done', {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: userId,
+        taskId: task.taskId,
+        task: task.task,
+        day: task.day,
+        time: task.time,
+        done: task.done
+      }),
+    })
 
-  //   const data = await res.json()
+    const data = await res.json()
+    console.log(data);
 
-  //   setTasks(
-  //     tasks.map((task) =>
-  //       task.id === id ? { ...task, reminder: !task.reminder } : task
-  //     )
-  //   )
-  // }
+    setTasks([data]);
+    fetchTasks(userId);
+
+  }
 
   //Log Out
   const logOut = () => {
@@ -307,7 +312,7 @@ function App() {
         }
       />
       <Route path='/profile' element={
-        <>
+      <>
         <Header
           onAdd ={()=>setShowAddTask(!showAddTask)} 
           showAdd ={showAddTask}
@@ -315,7 +320,7 @@ function App() {
           firstName = {userFirstName} />
         {showAddTask && <AddTask onAdd={addTask}/>}
         {tasks ? (
-          <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} onEdit={editTask}/>
+          <Tasks tasks={tasks} onDelete={deleteTask} onDone={updateDone} onToggle={toggleReminder} onEdit={editTask}/>
         ) : ('No Tasks to Show')
         }
       </>

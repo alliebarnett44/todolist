@@ -132,3 +132,7 @@ h3 {
   color: red;
   font-weight: bold;
 }
+
+.list {
+  white-space: nowrap;
+}
