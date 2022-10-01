@@ -8,7 +8,7 @@ import { useState } from 'react'
 Modal.setAppElement('#root');
 
 const DeleteTask = ({ task, onDelete }) => {
-  console.log(task.taskId)
+  // console.log(task.taskId)
 
   const [showModal, setShowModal] = useState(false);
 
@@ -19,7 +19,7 @@ const DeleteTask = ({ task, onDelete }) => {
   return (
     <div>
       <FaTimes style={{color: 'red', cursor: 'pointer'}} onClick={handleShow}/>
-      <Modal isOpen={showModal} style={{width: '50%', opacity: 1}} className='container'>
+      <Modal isOpen={showModal} style={{width: '700px', opacity: 1}} >
       <div className='form-control' onSubmit={handleClose}>
           <h3>
             Are you sure you want to delete this task?

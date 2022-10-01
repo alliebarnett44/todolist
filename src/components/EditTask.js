@@ -36,7 +36,7 @@ const EditTask = ({ task, onEdit, taskId }) => {
   return (
     <div>
       <button className='btn' style={{fontSize: '12px', background: 'gray', cursor: 'pointer', padding: '3px 5px', margin: '0px'}} onClick={handleShow}>Edit Task</button>
-      <Modal isOpen={show} style={{width: '50%'}} className='container'>
+      <Modal isOpen={show} style={{width: '50%'}} >
       <div className='form-control'>
         <form className='add-form'onSubmit={handleSubmit}>
             <h3>
