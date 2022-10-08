@@ -10,7 +10,6 @@ import SignUp from './components/SignUp'
 import Done from './components/Done'
 import { useState, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { useAccordionButton } from 'react-bootstrap'
 import Login from './components/Login'
 
 function App() {
@@ -72,8 +71,9 @@ function App() {
           email: info.email,
           password: info.password
         })
-      })
+      });
       const data = await res.json();
+      console.log(data);
       const count = data.Count
       console.log(count)
       const userInfo = data.Items
@@ -290,7 +290,7 @@ function App() {
   //   fetchTasks();
   // },[setTasks, setUserId])
 
-  // console.log(editTask)
+
 
   return (
     <div className='container'>
@@ -304,7 +304,7 @@ function App() {
           showLoginButton={showLogin}
           showCreateButton={showCreate}/>
         {showLogin && <Login validateUser={validateUser}/>}
-        {showCreate && <SignUp createUser={createUser}/>}
+        {showCreate && <SignUp createUser={createUser} validateEmail={validateEmail}/>}
         <div className='error-message'>
           {showErrorMessage}
         </div>

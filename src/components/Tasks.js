@@ -31,7 +31,7 @@ const Tasks = ({ tasks, onDelete, onToggle, onEdit, onDone }) => {
     </div>
     <button className='btn' style={{fontSize: '12px', background: 'black', cursor: 'pointer', padding: '3px 5px', margin: '0px'}} onClick={handleShow}>Completed Tasks</button>
     <Modal isOpen={show} style={{width: '50%'}} >
-        <Done tasks={tasks} onDelete={onDelete}/>
+        <Done tasks={tasks} onDelete={onDelete} onDone={onDone}/>
         <button className='btn btn-block' onClick={handleClose} type='button'>Close</button>
     </Modal>
   </>

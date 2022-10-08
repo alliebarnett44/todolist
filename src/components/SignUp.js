@@ -4,7 +4,9 @@ import Button from './Button';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye,faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-const SignUp = ({ createUser }) => {
+const SignUp = ({ createUser, validateEmail }) => {
+  console.log(validateEmail)
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -14,6 +16,7 @@ const SignUp = ({ createUser }) => {
   const[showConfirm, setShowConfirm] = useState(false);
   const [showMessage, setShowMessage] = useState('');
   const [showErrorMessage, setShowErrorMessage] = useState('')
+  const [otherErrorMessage, setOtherErrorMessage] = useState('')
   const pass = useRef();
   const confirmPass = useRef();
 
@@ -28,7 +31,10 @@ const SignUp = ({ createUser }) => {
     } else if(password.length < 3 ) {
       setShowErrorMessage('Password must be at least 8 characters long! ')
     }
-    else if(password === confirmPassword && password.length >= 8) {
+    else if (validateEmail(email) == true ) {
+      setOtherErrorMessage('Not a valid email!!')
+    }
+    else if(password === confirmPassword && password.length >= 8 && validateEmail(email) == true ) {
       setShowMessage('')
       setShowErrorMessage('')
     } else {
@@ -116,6 +122,7 @@ const SignUp = ({ createUser }) => {
         </div>
         <div className='error-message'> {showMessage} </div>
         <div className='error-message'>{showErrorMessage}</div>
+        <div className='error-message'>{otherErrorMessage}</div>
         <Button 
         color='black' 
         text='Create User'
