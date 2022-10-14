@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from './Button'
-import Pic from '../happycactus.webp'
+import Pic from '../check.jpeg'
 import Login from './Login'
 import About from './About'
 import Header from './Header'
@@ -28,7 +28,7 @@ const Homepage = ({ onShow, showLoginButton, onShowCreate, showCreateButton }) =
     </div>
     <br/>
     <div>
-      <h3>Log in and make a list bitch </h3>
+      <h3>Log in and create your personalized To-Do List </h3>
     </div>
     <br/>
     <div className='header'> 
